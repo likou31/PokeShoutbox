@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="FR">
+<head>
+<meta charset="UTF-8">
+<title>Accès à la page de modération</title>
+<link rel="stylesheet" th:href="@{css/style.css}" type="text/css" />
+<style>
+	section > form{
+		margin-top:20px;
+	}
+</style>
+</head>
+<body>
+<div class="container">
+<img th:src="@{pikachu.png}" class="icone" alt="pikachu shuffle"/>
+		<section>
+
+	<form method="get" action="/moderation" class="register-form">
+	<div class="password"><label for="password">Mot de Passe accès Modération</label>
+                <input type="password" id="password" name="pw" class="form-input"/>  </div>
+		<button type="submit" class="form-button">Accéder</button>
+	</form>
+	<p>(Version de test, mot de passe : moderationPassword)</p>
+
+</section>
+		<img th:src="@{evoli.png}" class="icone" alt="evoli shuffle"/>
+		</div>
+</body>
+</html>

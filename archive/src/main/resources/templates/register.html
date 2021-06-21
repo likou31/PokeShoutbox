@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="FR">
+	<head>
+	<meta charset="UTF-8" />
+	<title>S'inscrire</title>
+	<link rel="stylesheet" th:href="@{css/style.css}" type="text/css" />
+	</head>
+	<body>
+	<div class="container">
+		<img th:src="@{pikachu.png}" class="icone" alt="pikachu shuffle"/>
+		<section>
+		<h1>S'inscrire sur PokeShoutBox</h1>
+		<nav>
+		<a href="/"><span>Acceuil</span></a>
+			<a href="/shoutbox" sec:authorize="isAuthenticated()"><span>ShoutBox</span></a>
+			<a href="/login" sec:authorize="isAnonymous()"><span>Se connecter</span></a>
+			<a href="/logout" sec:authorize="isAuthenticated()">Se déconnecter</a>
+			<a href="/register" sec:authorize="isAnonymous()"><span>S'inscrire</span></a></nav>
+			
+			<div>Formulaire d'inscription</div>
+		<form th:action="@{/confirm-registration}" method="post" th:object="${user}" class="register-form">
+		<div>
+				<div class="username">
+					<label for="username">Votre pseudo</label>
+					<input type="text" th:field="*{pseudo}" class="form-input" required />
+				</div>
+				<div class="password">
+					<label for="password">Votre mot de passe</label>
+					<input type="password" th:field="*{password}" class="form-input" required />
+				</div>
+				<button type="submit" class="form-button">S'inscrire</button>
+				</div>
+		</form></section>
+		<img th:src="@{evoli.png}" class="icone" alt="evoli shuffle"/>
+		</div>
+	</body>
+</html>

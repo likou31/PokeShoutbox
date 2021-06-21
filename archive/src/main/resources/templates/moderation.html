@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="FR">
+<head>
+<meta charset="UTF-8" />
+<head>
+		<meta charset="UTF-8">
+		<title>ShoutBox</title>
+		<style>
+		
+		</style>
+		<link rel="stylesheet" th:href="@{css/style.css}" type="text/css" />
+	</head>
+	<body onload="reload()">
+	<div class="container">
+	<img th:src="@{pikachu.png}" class="icone" alt="pikachu shuffle"/>
+		<section>
+		<h1>Panneau de modération</h1>
+		<nav>
+			<a href="/"><span>Acceuil</span></a>
+			<a href="/shoutbox" sec:authorize="isAuthenticated()"><span>ShoutBox</span></a>
+			<a href="/logout" sec:authorize="isAuthenticated()">Se déconnecter</a>
+			<a href="/access-moderation" sec:authorize="isAuthenticated()">Modération</a>
+			
+		</nav>
+		<form id="form-research"><label for="pseudo-search">Pseudo : </label><input type="text" name="pseudo-search" id="pseudo-search" placeholder="pseudo"/><label for="mot-cle-search">Mot-clé : </label><input type="text" name="mot-cle-search" id="mot-cle-search" placeholder="Mot-clé"/></form>
+		<article id="comments">
+			
+		</article>
+		</section>
+		<img th:src="@{evoli.png}" class="icone" alt="evoli shuffle"/>
+		</div>
+		<script>
+		let xhr2 = new XMLHttpRequest();
+		let filterRequest = new XMLHttpRequest();
+		
+		function reload(){
+			xhr2.open('GET', '/shoutbox/reload-comments');
+	        xhr2.send();
+	        xhr2.addEventListener('readystatechange', function() {
+	            if (xhr2.readyState === XMLHttpRequest.DONE && xhr2.status === 200) {
+	                let array = xhr2.responseText;
+	                let json = JSON.parse(array);
+	                let str = "";
+	                json.reverse().forEach(function(element){
+	                	let temp = new Image();
+	                	temp.onerror = function() {
+	                		document.getElementById("contenu"+element.id).innerHTML = element.contenu;
+	                		
+	                	} 
+	                	temp.onload = function() {
+	                		
+	                		document.getElementById("contenu"+element.id).innerHTML = '<img src="'+element.contenu+'"/>';
+	                	}
+	                	temp.src = element.contenu;
+	                	str += '<div><section class="pseudo-date"><span class="pseudo">'+element.pseudoUser+'</span><span class="date-de-post">'+element.datePost+'</span></section><section class="commentaire"><span class="contenu" id="contenu'+element.id+'"></span></section><form method="post" action="/delete-comment"><button id="id-comment" name="id-comment" value="'+element.id+'" onclick="return confirm(\'Voulez-vous supprimer le message ?\')">Supprimer</button></form></div>';
+	                });
+	                document.querySelector("#comments").innerHTML = str;
+	            }
+	        });
+		};
+		
+		let allComments = document.querySelectorAll("#id-comment");
+	
+		let pseudoInput = document.getElementById("pseudo-search");
+		let motCleInput = document.getElementById("mot-cle-search");
+		
+		document.getElementById("form-research").addEventListener("input", function (event){
+			console.log("MDR");
+			if (pseudoInput.value == "" && motCleInput.value == ""){
+				reload();
+			} else if (pseudoInput.value != "" && motCleInput.value == "") {
+				filterRequest.open('GET', 'http://127.0.0.1:8080/shoutbox/filter-comments-pseudo');
+				filterRequest.setRequestHeader("pseudo", pseudoInput.value);
+				filterRequest.send();
+				filterRequest.addEventListener('readystatechange', function() {
+		            if (filterRequest.readyState === XMLHttpRequest.DONE && filterRequest.status === 200) {
+		                let array = filterRequest.responseText;
+		                let json = JSON.parse(array);
+		                let str = "";
+		                json.reverse().forEach(function(element) {
+		                	let temp = new Image();
+		                	temp.onerror = function() {
+		                		document.getElementById("contenu"+element.id).innerHTML = element.contenu;
+		                		
+		                	} 
+		                	temp.onload = function() {
+		                		document.getElementById("contenu"+element.id).innerHTML = '<img src="'+element.contenu+'" />';
+		                	}
+		                	temp.src = element.contenu;
+		                	str += '<div><section class="pseudo-date"><span class="pseudo">'+element.pseudoUser+'</span><span class="date-de-post">'+element.datePost+'</span></section><section class="commentaire"><span class="contenu" id="contenu'+element.id+'"></span></section></div>';
+		                	
+		                });
+		                document.querySelector("#comments").innerHTML = str;
+		            }
+		        });
+			} else if (pseudoInput.value == "" && motCleInput.value != ""){
+				filterRequest.open('GET', 'http://127.0.0.1:8080/shoutbox/filter-comments-mot-cle');
+				filterRequest.setRequestHeader("motCle", motCleInput.value);
+				filterRequest.send();
+				filterRequest.addEventListener('readystatechange', function() {
+		            if (filterRequest.readyState === XMLHttpRequest.DONE && filterRequest.status === 200) {
+		                let array = filterRequest.responseText;
+		                let json = JSON.parse(array);
+		                let str = "";
+		                json.reverse().forEach(element =>
+		                	str += '<div><section class="pseudo-date"><span class="pseudo">'+element.pseudoUser+'</span><span class="date-de-post">'+element.datePost+'</span></section><section class="commentaire"><span class="contenu">'+element.contenu+'</span></section></div>'
+		                );
+		                document.querySelector("#comments").innerHTML = str;
+		            }
+		        });
+			} else {
+				filterRequest.open('GET', 'http://127.0.0.1:8080/shoutbox/filter-comments-pseudo-and-mot-cle');
+				filterRequest.setRequestHeader("pseudo", pseudoInput.value);
+				filterRequest.setRequestHeader("motCle", motCleInput.value);
+				filterRequest.send();
+				filterRequest.addEventListener('readystatechange', function() {
+		            if (filterRequest.readyState === XMLHttpRequest.DONE && filterRequest.status === 200) {
+		                let array = filterRequest.responseText;
+		                let json = JSON.parse(array);
+		                let str = "";
+		                json.reverse().forEach(element =>
+		                	str += '<div><section class="pseudo-date"><span class="pseudo">'+element.pseudoUser+'</span><span class="date-de-post">'+element.datePost+'</span></section><section class="commentaire"><span class="contenu">'+element.contenu+'</span></section></div>'
+		                );
+		                document.querySelector("#comments").innerHTML = str;
+		            }
+		        });
+			}
+		});
+		
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="FR">
+<head>
+<meta charset="UTF-8" />
+<title>Poke ShoutBox</title>
+<link rel="stylesheet" th:href="@{css/style.css}" type="text/css" />
+<style>
+	section > article {
+		text-align:center;
+	}
+	
+	.red {
+	color:red;
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<img th:src="@{pikachu.png}" class="icone" alt="pikachu shuffle"/>
+		<section>
+		<h1>Accueil de la PokeShoutBox</h1>
+		<nav>
+			<a href="/"><span>Acceuil</span></a>
+			<a href="/shoutbox" sec:authorize="isAuthenticated()"><span>ShoutBox</span></a>
+			<a href="/login" sec:authorize="isAnonymous()"><span>Se connecter</span></a>
+			<a href="/logout" sec:authorize="isAuthenticated()">Se déconnecter</a>
+			<a href="/register" sec:authorize="isAnonymous()"><span>S'inscrire</span></a>
+			<a href="/access-moderation" sec:authorize="isAuthenticated()">Modération</a>
+		</nav>
+		<div sec:authorize="isAuthenticated()">Welcome <strong>[[${#request.userPrincipal.principal.username}]]</strong></div>
+		<article>
+		<p>Bienvenue sur la PokeShoutBox</p>
+		<p>Vous pourrez y retrouver toute sorte de personnes avec lesquels vous pouvez tchater de tout et n'importe quoi !</p>
+		<p class="red">### Les vulgarités sont interdites, et le respect envers les autres est obligatoire ###</p>
+		<p>Amusez-vous bien sur la PokeShoutBox !</p>
+		
+		</article>
+		</section>
+		<img th:src="@{evoli.png}" class="icone" alt="evoli shuffle"/>
+	</div>
+</body>
+</html>
